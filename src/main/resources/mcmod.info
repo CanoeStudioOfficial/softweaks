@@ -1,13 +1,13 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
+  "modid": "softweaks",
+  "name": "Softweaks",
   "description": "Example placeholder mod.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["CleanroomMC"],
+  "authorList": ["CanoeStudio"],
   "credits": "Authors of this project",
   "logoFile": "",
   "screenshots": [],

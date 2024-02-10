@@ -43,7 +43,7 @@ minecraft {
     mcpMappingVersion = '39'
     
     // Set username here, the UUID will be looked up automatically
-    username = 'Developer'
+    username = 'lonelyxiya'
     
     // Add any additional tweaker classes here
     // extraTweakClasses.add('org.spongepowered.asm.launch.MixinTweaker')
@@ -100,7 +100,7 @@ dependencies {
         implementation 'com.cleanroommc:assetmover:2.5'
     }
     if (project.use_mixins.toBoolean()) {
-        implementation 'zone.rong:mixinbooter:7.1'
+        implementation 'zone.rong:mixinbooter:9.1'
     }
 
     // Example of deobfuscating a dependency
@@ -108,7 +108,7 @@ dependencies {
 
     if (project.use_mixins.toBoolean()) {
         // Change your mixin refmap name here:
-        String mixin = modUtils.enableMixins('org.spongepowered:mixin:0.8.3', "mixins.${project.archives_base_name}.refmap.json")
+        String mixin = modUtils.enableMixins("zone.rong:mixinbooter:9.1", "mixins.${project.archives_base_name}.refmap.json")
         api (mixin) {
             transitive = false
         }

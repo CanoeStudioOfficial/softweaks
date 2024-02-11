@@ -1,7 +1,9 @@
 package com.lonelyxiya.softweaks;
 
+import com.lonelyxiya.softweaks.event.DragonMurder;
 import com.lonelyxiya.softweaks.event.TorchModule;
 import com.lonelyxiya.softweaks.event.LadderModule;
+
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +25,8 @@ public class Softweaks {
         new TorchModule().preInit(event);
 
         new LadderModule().preInit(event);
+
+        new DragonMurder().preInit(event);
     }
 }
 

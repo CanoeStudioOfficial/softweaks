@@ -36,12 +36,15 @@ public class DragonMurder {
             DragonFightManager dragonFightManager = endProvider.getDragonFightManager();
 
             if (entity instanceof EntityDragon && dragonFightManager != null && !dragonFightManager.hasPreviouslyKilledDragon()) {
-                ((EntityDragon) entity).setDead(); // 移除末影龙
 
-                // 移除所有末地水晶
+                EntityDragon dragon = new EntityDragon(world);
+                dragon.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, world.rand.nextFloat() * 360.0F, 0.0F);
+                world.spawnEntity(dragon);
+
+
                 for (WorldGenSpikes.EndSpike spike : BiomeEndDecorator.getSpikesForWorld(world)) {
                     world.getEntitiesWithinAABB(EntityEnderCrystal.class, spike.getTopBoundingBox())
-                            .forEach(crystal -> crystal.setDead()); // 移除水晶
+                            .forEach(crystal -> crystal.setDead());
                 }
             }
         }

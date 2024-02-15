@@ -1,6 +1,7 @@
 package com.lonelyxiya.softweaks;
 
 import com.lonelyxiya.softweaks.event.DragonMurder;
+import com.lonelyxiya.softweaks.event.ExperienceModule;
 import com.lonelyxiya.softweaks.event.TorchModule;
 import com.lonelyxiya.softweaks.event.LadderModule;
 
@@ -27,6 +28,8 @@ public class Softweaks {
         new LadderModule().preInit(event);
 
         new DragonMurder().preInit(event);
+
+        new ExperienceModule().preInit(event);
     }
 }
 

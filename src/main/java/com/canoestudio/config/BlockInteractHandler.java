@@ -1,6 +1,5 @@
 package com.canoestudio.config;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
@@ -9,7 +8,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,8 +15,6 @@ import java.util.Map;
 
 public class BlockInteractHandler {
 
-    private static String interactMessageKey = "message.interact_success";
-    private static String insufficientExperienceMessageKey = "message.not_enough_experience";
     private static Map<BlockKey, Integer> blockExperienceLevels = new HashMap<>();
 
     public static void initConfig(File configDir) {
@@ -73,9 +69,9 @@ public class BlockInteractHandler {
                 int playerExperienceLevel = player.experienceLevel;
                 if (playerExperienceLevel >= requiredExperienceLevels) {
                     player.addExperienceLevel(-requiredExperienceLevels);
-                    player.sendMessage(new TextComponentTranslation(interactMessageKey, requiredExperienceLevels));
+                    player.sendMessage(new TextComponentTranslation("message.interact_success", requiredExperienceLevels));
                 } else {
-                    player.sendMessage(new TextComponentTranslation(insufficientExperienceMessageKey, requiredExperienceLevels));
+                    player.sendMessage(new TextComponentTranslation("message.not_enough_experience", requiredExperienceLevels));
                 }
             }
         }

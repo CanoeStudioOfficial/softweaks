@@ -3,5 +3,5 @@ message.whitelist_initialized=Whitelist initialized with default commands.
 message.rank_initialized=Player {0} is assigned as {1}.
 message.interact_success=Interaction successful, {0} levels of experience have been consumed.
 message.not_enough_experience=Interaction failed, you do not have enough experience levels.
-missing_item_message=You do not have the required item to enter the Nether.
-prevent_break_message=You did not hold the required item and cannot break blocks in the Nether.
+message.missing_item_message=You do not have the required item to enter the Nether.
+message.prevent_break_message=You did not hold the required item and cannot break blocks in the Nether.

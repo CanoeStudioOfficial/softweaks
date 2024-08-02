@@ -1,5 +1,7 @@
 package com.canoestudio.config;
 
+import net.minecraft.util.text.TextComponentTranslation;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +53,7 @@ public class RankHandler {
     public static Rank getPlayerRank(String playerName) {
         if (!playerRanks.containsKey(playerName)) {
             setPlayerRank(playerName, Rank.USER); // 默认设置为USER
+            System.out.println(new TextComponentTranslation("message.rank_initialized", playerName, Rank.USER.name()).getFormattedText());
         }
         return playerRanks.getOrDefault(playerName, Rank.USER);
     }

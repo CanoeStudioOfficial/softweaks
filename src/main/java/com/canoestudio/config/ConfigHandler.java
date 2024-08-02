@@ -1,5 +1,7 @@
 package com.canoestudio.config;
 
+import net.minecraft.util.text.TextComponentTranslation;
+
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +31,7 @@ public class ConfigHandler {
             whitelist.add("tp");
             whitelist.add("give");
             saveConfig();
+            System.out.println(new TextComponentTranslation("message.whitelist_initialized").getFormattedText());
         }
     }
 

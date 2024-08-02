@@ -7,7 +7,7 @@ import com.canoestudio.softtweaks.Tags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -19,10 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,12 +27,12 @@ import java.util.Set;
 
 
 @Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION)
-public class Softtweaks {
+public class Softweaks {
 
     private static Set<String> unsupportedMods = new HashSet<>();
 
     @Mod.Instance
-    public static Softtweaks instance;
+    public static Softweaks instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -56,6 +53,16 @@ public class Softtweaks {
                 while ((line = reader.readLine()) != null) {
                     unsupportedMods.add(line.trim());
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 创建默认不支持的MOD列表文件
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(unsupportedModsFile))) {
+                writer.write("examplemod1\n");
+                writer.write("examplemod2\n");
+                unsupportedMods.add("examplemod1");
+                unsupportedMods.add("examplemod2");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -94,7 +101,7 @@ public class Softtweaks {
             EntityPlayer player = event.player;
             PotionEffect weakness = new PotionEffect(MobEffects.WEAKNESS, 600, 9, false, false);
             player.addPotionEffect(weakness);
-            player.sendMessage(new TextComponentString("You have been given Weakness because you have an unsupported mod installed."));
+            player.sendMessage(new TextComponentTranslation("message.unsupported_mod"));
         }
     }
 

@@ -1,0 +1,3 @@
+message.unsupported_mod=您因安装了不支持的MOD而被给予虚弱效果。
+message.whitelist_initialized=已用默认命令初始化白名单。
+message.rank_initialized=玩家 {0} 被分配为 {1}。

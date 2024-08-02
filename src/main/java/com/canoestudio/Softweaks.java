@@ -59,10 +59,10 @@ public class Softweaks {
         } else {
             // 创建默认不支持的MOD列表文件
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(unsupportedModsFile))) {
-                writer.write("examplemod1\n");
-                writer.write("examplemod2\n");
-                unsupportedMods.add("examplemod1");
-                unsupportedMods.add("examplemod2");
+                writer.write("projecte\n");
+                writer.write("projectex\n");
+                unsupportedMods.add("projecte");
+                unsupportedMods.add("projectex");
             } catch (IOException e) {
                 e.printStackTrace();
             }

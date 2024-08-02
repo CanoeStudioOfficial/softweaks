@@ -30,7 +30,9 @@ public class BlockInteractHandler {
                 config.load();
 
                 // 添加默认配置
-                config.get(Configuration.CATEGORY_GENERAL, "minecraft:diamond_block:0:right", 5).getInt();
+                config.get(Configuration.CATEGORY_GENERAL, "interactBlocks", new String[]{
+                        "minecraft:diamond_block:0:right=5"
+                });
 
                 if (config.hasChanged()) {
                     config.save();
@@ -43,13 +45,15 @@ public class BlockInteractHandler {
         Configuration config = new Configuration(configFile);
         config.load();
 
-        for (String key : config.getCategory(Configuration.CATEGORY_GENERAL).keySet()) {
-            String[] parts = key.split(":");
+        String[] interactBlocks = config.get(Configuration.CATEGORY_GENERAL, "interactBlocks", new String[]{}).getStringList();
+        for (String entry : interactBlocks) {
+            String[] parts = entry.split(":");
             if (parts.length == 4) {
                 String blockId = parts[0] + ":" + parts[1];
                 int meta = Integer.parseInt(parts[2]);
-                String hand = parts[3];
-                int level = config.get(Configuration.CATEGORY_GENERAL, key, 0).getInt();
+                String[] handAndLevel = parts[3].split("=");
+                String hand = handAndLevel[0];
+                int level = Integer.parseInt(handAndLevel[1]);
                 blockExperienceLevels.put(new BlockKey(blockId, meta, hand), level);
             }
         }

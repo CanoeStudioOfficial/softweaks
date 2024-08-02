@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,7 +29,9 @@ public class DimensionEnterHandler {
                 config.load();
 
                 // 添加默认配置
-                config.get(Configuration.CATEGORY_GENERAL, "-1:minecraft:diamond_sword:0:right", "required");
+                config.get(Configuration.CATEGORY_GENERAL, "dimensionItems", new String[]{
+                        "-1=minecraft:diamond_sword:0:right"
+                });
 
                 if (config.hasChanged()) {
                     config.save();
@@ -41,14 +44,18 @@ public class DimensionEnterHandler {
         Configuration config = new Configuration(configFile);
         config.load();
 
-        for (String key : config.getCategory(Configuration.CATEGORY_GENERAL).keySet()) {
-            String[] parts = key.split(":");
-            if (parts.length == 5) {
+        String[] dimensionItems = config.get(Configuration.CATEGORY_GENERAL, "dimensionItems", new String[]{}).getStringList();
+        for (String entry : dimensionItems) {
+            String[] parts = entry.split("=");
+            if (parts.length == 2) {
                 int dimension = Integer.parseInt(parts[0]);
-                ResourceLocation itemResource = new ResourceLocation(parts[1], parts[2]);
-                int meta = Integer.parseInt(parts[3]);
-                String hand = parts[4];
-                dimensionItemRequirements.put(dimension, new DimensionRequirement(itemResource, meta, hand));
+                String[] itemParts = parts[1].split(":");
+                if (itemParts.length == 4) {
+                    ResourceLocation itemResource = new ResourceLocation(itemParts[0], itemParts[1]);
+                    int meta = Integer.parseInt(itemParts[2]);
+                    String hand = itemParts[3];
+                    dimensionItemRequirements.put(dimension, new DimensionRequirement(itemResource, meta, hand));
+                }
             }
         }
     }

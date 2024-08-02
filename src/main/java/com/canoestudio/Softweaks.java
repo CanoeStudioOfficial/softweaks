@@ -3,6 +3,7 @@ package com.canoestudio;
 import com.canoestudio.command.CommandActivateAdmin;
 import com.canoestudio.config.BlockInteractHandler;
 import com.canoestudio.config.ConfigHandler;
+import com.canoestudio.config.DimensionEnterHandler;
 import com.canoestudio.config.RankHandler;
 import com.canoestudio.softtweaks.Tags;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +47,7 @@ public class Softweaks {
 
         // 初始化交互处理配置
         BlockInteractHandler.initConfig(configDir);
+        DimensionEnterHandler.initConfig(configDir);
 
         // 加载不支持的MOD列表
         File unsupportedModsFile = new File(configDir, "unsupported_mods.txt");
@@ -78,6 +80,7 @@ public class Softweaks {
         // 注册事件
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new BlockInteractHandler());
+        MinecraftForge.EVENT_BUS.register(new DimensionEnterHandler());
     }
 
     @Mod.EventHandler

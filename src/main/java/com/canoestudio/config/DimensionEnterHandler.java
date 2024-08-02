@@ -9,16 +9,14 @@ import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class DimensionEnterHandler {
 
-    private static String missingItemMessage = "You do not have the required item to enter the Nether.";
+    private static String missingItemMessageKey = "message.missing_item_message";
     private static Map<Integer, DimensionRequirement> dimensionItemRequirements = new HashMap<>();
 
     public static void initConfig(File configDir) {
@@ -76,7 +74,7 @@ public class DimensionEnterHandler {
                 }
 
                 if (!hasRequiredItem) { // 特殊处理进入地狱
-                    player.sendMessage(new TextComponentTranslation(missingItemMessage));
+                    player.sendMessage(new TextComponentTranslation(missingItemMessageKey));
                     event.setCanceled(true); // 阻止传送到地狱
                 }
             }

@@ -1,0 +1,5 @@
+message.unsupported_mod=You have been given Weakness because you have an unsupported mod installed.
+message.whitelist_initialized=Whitelist initialized with default commands.
+message.rank_initialized=Player {0} is assigned as {1}.
+message.interact_success=Interaction successful, {0} levels of experience have been consumed.
+message.not_enough_experience=Interaction failed, you do not have enough experience levels.

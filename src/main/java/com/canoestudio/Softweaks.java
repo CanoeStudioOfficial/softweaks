@@ -49,22 +49,24 @@ public class Softweaks {
 
         // 加载不支持的MOD列表
         File unsupportedModsFile = new File(configDir, "unsupported_mods.txt");
-        if (unsupportedModsFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(unsupportedModsFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    unsupportedMods.add(line.trim());
+        if (!unsupportedModsFile.exists()) {
+            try {
+                unsupportedModsFile.createNewFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(unsupportedModsFile))) {
+                    writer.write("projecte\n");
+                    writer.write("projectex\n");
+                    unsupportedMods.add("projecte");
+                    unsupportedMods.add("projectex");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            // 创建默认不支持的MOD列表文件
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(unsupportedModsFile))) {
-                writer.write("projecte\n");
-                writer.write("projectex\n");
-                unsupportedMods.add("projecte");
-                unsupportedMods.add("projectex");
+            try (BufferedReader reader = new BufferedReader(new FileReader(unsupportedModsFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    unsupportedMods.add(line.trim());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

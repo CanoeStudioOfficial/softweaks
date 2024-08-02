@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -14,15 +13,12 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class DimensionEnterHandler {
 
-    private static String preventBreakMessage = "You did not hold the required item and cannot break blocks in the Nether.";
-    private static Map<Integer, ItemRequirement> dimensionItemRequirements = new HashMap<>();
-    private static Set<String> playersWithoutItem = new HashSet<>();
+    private static String missingItemMessage = "You do not have the required item to enter the Nether.";
+    private static Map<Integer, DimensionRequirement> dimensionItemRequirements = new HashMap<>();
 
     public static void initConfig(File configDir) {
         File configFile = new File(configDir, "dimension_enter_config.txt");
@@ -33,7 +29,7 @@ public class DimensionEnterHandler {
                 config.load();
 
                 // 添加默认配置
-                config.get(Configuration.CATEGORY_GENERAL, "-1:minecraft:diamond_sword:0", "required");
+                config.get(Configuration.CATEGORY_GENERAL, "-1:minecraft:diamond_sword:0:check", "required");
 
                 if (config.hasChanged()) {
                     config.save();
@@ -48,11 +44,12 @@ public class DimensionEnterHandler {
 
         for (String key : config.getCategory(Configuration.CATEGORY_GENERAL).keySet()) {
             String[] parts = key.split(":");
-            if (parts.length == 4) {
+            if (parts.length == 5) {
                 int dimension = Integer.parseInt(parts[0]);
                 ResourceLocation itemResource = new ResourceLocation(parts[1], parts[2]);
                 int meta = Integer.parseInt(parts[3]);
-                dimensionItemRequirements.put(dimension, new ItemRequirement(itemResource, meta));
+                String action = parts[4];
+                dimensionItemRequirements.put(dimension, new DimensionRequirement(itemResource, meta, action));
             }
         }
     }
@@ -64,37 +61,39 @@ public class DimensionEnterHandler {
             int dimension = event.getDimension();
 
             if (dimensionItemRequirements.containsKey(dimension)) {
-                ItemRequirement requirement = dimensionItemRequirements.get(dimension);
-                ItemStack heldItem = player.getHeldItemMainhand();
+                DimensionRequirement requirement = dimensionItemRequirements.get(dimension);
 
-                boolean hasRequiredItem = heldItem.getItem() == ForgeRegistries.ITEMS.getValue(requirement.item) && heldItem.getMetadata() == requirement.meta;
+                if ("check".equals(requirement.action)) {
+                    boolean hasRequiredItem = false;
 
-                if (dimension == -1 && !hasRequiredItem) {
-                    playersWithoutItem.add(player.getUniqueID().toString());
-                    player.sendMessage(new TextComponentTranslation(preventBreakMessage));
-                } else {
-                    playersWithoutItem.remove(player.getUniqueID().toString());
+                    // 检查玩家背包是否有指定物品
+                    for (ItemStack stack : player.inventory.mainInventory) {
+                        if (stack.getItem() == ForgeRegistries.ITEMS.getValue(requirement.item) && stack.getMetadata() == requirement.meta) {
+                            hasRequiredItem = true;
+                            stack.shrink(1); // 消耗一个物品
+                            break;
+                        }
+                    }
+
+                    if (!hasRequiredItem) { // 特殊处理进入地狱
+                        player.sendMessage(new TextComponentTranslation(missingItemMessage));
+                        event.setCanceled(true); // 阻止传送到地狱
+                    }
                 }
+                // 其他动作可以在此处添加，例如 "allow" 表示允许进入维度
             }
         }
     }
 
-    @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
-        EntityPlayer player = event.getPlayer();
-        if (player.world.provider.getDimension() == -1 && playersWithoutItem.contains(player.getUniqueID().toString())) {
-            event.setCanceled(true);
-            player.sendMessage(new TextComponentTranslation(preventBreakMessage));
-        }
-    }
-
-    private static class ItemRequirement {
+    private static class DimensionRequirement {
         ResourceLocation item;
         int meta;
+        String action;
 
-        ItemRequirement(ResourceLocation item, int meta) {
+        DimensionRequirement(ResourceLocation item, int meta, String action) {
             this.item = item;
             this.meta = meta;
+            this.action = action;
         }
     }
 }

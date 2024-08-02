@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class BlockInteractHandler {
 
     private static String interactMessage = "Interaction successful, {0} levels of experience have been consumed.";
@@ -27,10 +28,8 @@ public class BlockInteractHandler {
                 Configuration config = new Configuration(configFile);
                 config.load();
 
-                // 添加默认方块经验设置
-                config.get(Configuration.CATEGORY_GENERAL, "minecraft:stone:0:right", 3).getInt();
-                config.get(Configuration.CATEGORY_GENERAL, "minecraft:stone:1:left", 5).getInt();
-                config.get(Configuration.CATEGORY_GENERAL, "minecraft:diamond_block:right", 10).getInt();
+                // 添加默认配置
+                config.get(Configuration.CATEGORY_GENERAL, "minecraft:diamond_block:right", 5).getInt();
 
                 if (config.hasChanged()) {
                     config.save();
@@ -44,9 +43,7 @@ public class BlockInteractHandler {
         config.load();
 
         for (String key : config.getCategory(Configuration.CATEGORY_GENERAL).keySet()) {
-            if (key.contains(":")) {
-                blockExperienceLevels.put(key, config.get(Configuration.CATEGORY_GENERAL, key, 0).getInt());
-            }
+            blockExperienceLevels.put(key, config.get(Configuration.CATEGORY_GENERAL, key, 0).getInt());
         }
     }
 
@@ -55,9 +52,8 @@ public class BlockInteractHandler {
         EntityPlayer player = event.getEntityPlayer();
         if (!player.world.isRemote) {
             Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
-            int meta = block.getMetaFromState(event.getWorld().getBlockState(event.getPos()));
             String hand = event.getHand() == EnumHand.MAIN_HAND ? "right" : "left";
-            String key = block.getRegistryName().toString() + ":" + meta + ":" + hand;
+            String key = block.getRegistryName().toString() + ":" + hand;
 
             if (blockExperienceLevels.containsKey(key)) {
                 int requiredExperienceLevels = blockExperienceLevels.get(key);

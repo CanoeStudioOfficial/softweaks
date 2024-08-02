@@ -3,3 +3,5 @@ message.whitelist_initialized=已用默认命令初始化白名单。
 message.rank_initialized=玩家 {0} 被分配为 {1}。
 message.interact_success=互动成功，已消耗 {0} 级经验。
 message.not_enough_experience=互动失败，您的等级不足 {0} 级。
+missing_item_message=你没有持有指定物品，无法进入地狱传送门。
+prevent_break_message=你没有手持指定物品，无法破坏地狱中的任何东西。

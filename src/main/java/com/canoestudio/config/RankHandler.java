@@ -45,14 +45,14 @@ public class RankHandler {
                 e.printStackTrace();
             }
         } else {
-            adminKey = "defaultAdminKey"; // 默认管理员密钥，可以在第一次运行时手动更改
+            adminKey = "defaultAdminKey";
             saveKeyConfig();
         }
     }
 
     public static Rank getPlayerRank(String playerName) {
         if (!playerRanks.containsKey(playerName)) {
-            setPlayerRank(playerName, Rank.USER); // 默认设置为USER
+            setPlayerRank(playerName, Rank.USER);
             System.out.println(new TextComponentTranslation("message.rank_initialized", playerName, Rank.USER.name()).getFormattedText());
         }
         return playerRanks.getOrDefault(playerName, Rank.USER);

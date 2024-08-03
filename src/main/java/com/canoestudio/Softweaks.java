@@ -1,6 +1,7 @@
 package com.canoestudio;
 
 import com.canoestudio.command.CommandActivateAdmin;
+import com.canoestudio.config.BlockInteractHandler;
 import com.canoestudio.config.ConfigHandler;
 import com.canoestudio.config.RankHandler;
 import com.canoestudio.softtweaks.Tags;
@@ -40,6 +41,7 @@ public class Softweaks {
         // 加载配置文件
         ConfigHandler.init(configDir);
         RankHandler.init(configDir); // 初始化 RankHandler
+        BlockInteractHandler.initConfig(configDir); // 初始化 BlockInteractHandler
 
         // 加载不支持的MOD列表
         File unsupportedModsFile = new File(configDir, "unsupported_mods.txt");
@@ -71,6 +73,7 @@ public class Softweaks {
     public void init(FMLInitializationEvent event) {
         // 注册事件
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new BlockInteractHandler());
     }
 
     @Mod.EventHandler

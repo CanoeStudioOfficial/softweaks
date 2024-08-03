@@ -1,0 +1,10 @@
+message.usage=Usage: {0}
+message.player_not_found=Player not found: {0}
+message.admin_privileges_activated=Admin privileges activated for {0}.
+message.you_have_been_granted_admin_privileges=You have been granted admin privileges.
+message.invalid_key=Invalid key.
+message.whitelist_initialized=Whitelist initialized with default commands.
+message.rank_initialized=Player {0} is assigned as {1}.
+message.command_not_allowed=You are not allowed to use this command.
+message.block_interact_success=You successfully interacted with the {0} block using {1} click, consuming {2} levels of experience.
+message.not_enough_experience=Interaction failed, you do not have enough experience levels ({0} required).

@@ -1,6 +1,6 @@
 package com.canoestudio.config;
 
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.client.resources.I18n;
 
 import java.io.*;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class RankHandler {
     public static Rank getPlayerRank(String playerName) {
         if (!playerRanks.containsKey(playerName)) {
             setPlayerRank(playerName, Rank.USER);
-            System.out.println(new TextComponentTranslation("message.rank_initialized", playerName, Rank.USER.name()).getFormattedText());
+            System.out.println(I18n.format("message.rank_initialized", playerName, Rank.USER.name()));
         }
         return playerRanks.getOrDefault(playerName, Rank.USER);
     }

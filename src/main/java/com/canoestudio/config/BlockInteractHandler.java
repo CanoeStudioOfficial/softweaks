@@ -1,9 +1,10 @@
 package com.canoestudio.config;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -70,9 +71,9 @@ public class BlockInteractHandler {
                     int requiredExperienceLevels = blockInteractions.get(key);
                     if (player.experienceLevel >= requiredExperienceLevels) {
                         player.addExperienceLevel(-requiredExperienceLevels);
-                        player.sendMessage(new TextComponentTranslation("message.block_interact_success", blockInteractions.get(key), hand));
+                        player.sendMessage(new TextComponentString(I18n.format("message.block_interact_success", block.getRegistryName().toString(), hand, requiredExperienceLevels)));
                     } else {
-                        player.sendMessage(new TextComponentTranslation("message.not_enough_experience", requiredExperienceLevels));
+                        player.sendMessage(new TextComponentString(I18n.format("message.not_enough_experience", requiredExperienceLevels)));
                     }
                 }
             }

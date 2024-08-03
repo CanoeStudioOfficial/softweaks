@@ -1,20 +1,24 @@
 package com.canoestudio.config;
 
-import net.minecraft.util.text.TextComponentTranslation;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ConfigHandler {
     private static Set<String> whitelist;
-    private static File configFile;
+    private static Set<String> superUsers;
+    private static File whitelistFile;
+    private static File superUsersFile;
 
     public static void init(File configDir) {
-        configFile = new File(configDir, "whitelist.txt");
+        whitelistFile = new File(configDir, "whitelist.txt");
+        superUsersFile = new File(configDir, "superusers.txt");
         whitelist = new HashSet<>();
-        if (configFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+        superUsers = new HashSet<>();
+
+        // 加载白名单
+        if (whitelistFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(whitelistFile))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     whitelist.add(line.trim());
@@ -30,8 +34,22 @@ public class ConfigHandler {
             whitelist.add("say");
             whitelist.add("tp");
             whitelist.add("give");
-            saveConfig();
-            System.out.println(new TextComponentTranslation("message.whitelist_initialized").getFormattedText());
+            saveWhitelistConfig();
+        }
+
+        // 加载超级用户列表
+        if (superUsersFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(superUsersFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    superUsers.add(line.trim());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 如果文件不存在，可以选择初始化为空文件
+            saveSuperUsersConfig();
         }
     }
 
@@ -39,17 +57,39 @@ public class ConfigHandler {
         return whitelist.contains(commandName);
     }
 
+    public static boolean isSuperUser(String playerName) {
+        return superUsers.contains(playerName);
+    }
+
     public static void addCommandToWhitelist(String commandName) {
         if (!whitelist.contains(commandName)) {
             whitelist.add(commandName);
-            saveConfig();
+            saveWhitelistConfig();
         }
     }
 
-    private static void saveConfig() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+    public static void addSuperUser(String playerName) {
+        if (!superUsers.contains(playerName)) {
+            superUsers.add(playerName);
+            saveSuperUsersConfig();
+        }
+    }
+
+    private static void saveWhitelistConfig() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(whitelistFile))) {
             for (String command : whitelist) {
                 writer.write(command);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void saveSuperUsersConfig() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(superUsersFile))) {
+            for (String user : superUsers) {
+                writer.write(user);
                 writer.newLine();
             }
         } catch (IOException e) {

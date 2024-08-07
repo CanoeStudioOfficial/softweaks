@@ -1,6 +1,7 @@
 package com.canoestudio;
 
 import com.canoestudio.command.CommandActivateAdmin;
+import com.canoestudio.command.CommandHandler;
 import com.canoestudio.config.BlockInteractHandler;
 import com.canoestudio.config.ConfigHandler;
 import com.canoestudio.config.RankHandler;
@@ -28,6 +29,7 @@ import java.util.Set;
 public class Softweaks {
 
     private static Set<String> unsupportedMods = new HashSet<>();
+    private static boolean isIntegratedServer;
 
     @Mod.Instance
     public static Softweaks instance;
@@ -79,8 +81,12 @@ public class Softweaks {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        // 检测服务器类型
+        isIntegratedServer = event.getServer().isSinglePlayer();
+
         // 注册命令
         event.registerServerCommand(new CommandActivateAdmin());
+        MinecraftForge.EVENT_BUS.register(new CommandHandler(isIntegratedServer)); // 注册CommandHandler
     }
 
     @SubscribeEvent
@@ -110,6 +116,6 @@ public class Softweaks {
     @SubscribeEvent
     public void onCommand(CommandEvent event) {
         // 处理指令事件
-        com.canoestudio.command.CommandHandler.handleCommand(event);
+        CommandHandler.handleCommand(event);
     }
 }

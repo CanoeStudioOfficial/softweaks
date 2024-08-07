@@ -5,10 +5,11 @@ import com.canoestudio.config.BlockInteractHandler;
 import com.canoestudio.config.ConfigHandler;
 import com.canoestudio.config.RankHandler;
 import com.canoestudio.softtweaks.Tags;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -102,7 +103,7 @@ public class Softweaks {
             EntityPlayer player = event.player;
             PotionEffect weakness = new PotionEffect(MobEffects.WEAKNESS, 600, 9, false, false);
             player.addPotionEffect(weakness);
-            player.sendMessage(new TextComponentTranslation("message.unsupported_mod"));
+            player.sendMessage(new TextComponentString(I18n.format("message.unsupported_mod")));
         }
     }
 

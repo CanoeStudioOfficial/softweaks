@@ -1,12 +1,15 @@
 package com.canoestudio.config;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.resources.I18n;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,21 +61,24 @@ public class BlockInteractHandler {
 
     @SubscribeEvent
     public void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {
-        EntityPlayer player = event.getEntityPlayer();
-        if (!player.world.isRemote) {
-            Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
-            int meta = block.getMetaFromState(event.getWorld().getBlockState(event.getPos()));
-            BlockKey key = new BlockKey(block.getRegistryName().toString(), meta);
+        // 确保不是吃食物等其他交互行为
+        if (event.getItemStack().isEmpty() || event.getEntityPlayer().isSneaking()) {
+            return;
+        }
 
-            if (blockInteractions.containsKey(key)) {
-                int requiredExperienceLevels = blockInteractions.get(key);
-                if (player.experienceLevel >= requiredExperienceLevels) {
-                    player.addExperienceLevel(-requiredExperienceLevels);
-                    player.sendMessage(new TextComponentString(I18n.format("message.block_interact_success", block.getRegistryName().toString(), requiredExperienceLevels)));
-                } else {
-                    player.sendMessage(new TextComponentString(I18n.format("message.not_enough_experience", requiredExperienceLevels)));
-                    event.setCanceled(true); // 取消互动
-                }
+        EntityPlayer player = event.getEntityPlayer();
+        Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
+        int meta = block.getMetaFromState(event.getWorld().getBlockState(event.getPos()));
+        BlockKey key = new BlockKey(block.getRegistryName().toString(), meta);
+
+        if (blockInteractions.containsKey(key)) {
+            int requiredExperienceLevels = blockInteractions.get(key);
+            if (player.experienceLevel >= requiredExperienceLevels) {
+                player.addExperienceLevel(-requiredExperienceLevels);
+                player.sendMessage(new TextComponentString(I18n.format("message.block_interact_success", block.getRegistryName().toString(), requiredExperienceLevels)));
+            } else {
+                player.sendMessage(new TextComponentString(I18n.format("message.not_enough_experience", requiredExperienceLevels)));
+                event.setCanceled(true); // 取消互动
             }
         }
     }

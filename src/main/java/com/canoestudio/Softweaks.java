@@ -2,7 +2,6 @@ package com.canoestudio;
 
 import com.canoestudio.command.CommandActivateAdmin;
 import com.canoestudio.command.CommandHandler;
-import com.canoestudio.config.BlockInteractHandler;
 import com.canoestudio.config.ConfigHandler;
 import com.canoestudio.config.RankHandler;
 import com.canoestudio.softtweaks.Tags;
@@ -16,7 +15,9 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
@@ -44,7 +45,6 @@ public class Softweaks {
         // 加载配置文件
         ConfigHandler.init(configDir);
         RankHandler.init(configDir); // 初始化 RankHandler
-        BlockInteractHandler.initConfig(configDir); // 初始化 BlockInteractHandler
 
         // 加载不支持的MOD列表
         File unsupportedModsFile = new File(configDir, "unsupported_mods.txt");
@@ -76,7 +76,6 @@ public class Softweaks {
     public void init(FMLInitializationEvent event) {
         // 注册事件
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new BlockInteractHandler());
     }
 
     @Mod.EventHandler

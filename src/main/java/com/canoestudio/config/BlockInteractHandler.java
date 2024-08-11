@@ -3,9 +3,11 @@ package com.canoestudio.config;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 public class BlockInteractHandler {
 
+    private static Map<BlockPos, Integer> guiInteractionTracker = new HashMap<>();
     private static Map<BlockKey, Integer> blockInteractions = new HashMap<>();
 
     public static void initConfig(File configDir) {
@@ -27,7 +30,7 @@ public class BlockInteractHandler {
                 Configuration config = new Configuration(configFile);
                 config.load();
 
-                // 添加默认配置
+                // 添加默认配置（工作台、熔炉、箱子）
                 config.get(Configuration.CATEGORY_GENERAL, "interactBlocks", new String[]{
                         "minecraft:crafting_table:0=5",
                         "minecraft:furnace:0=5",
@@ -64,25 +67,41 @@ public class BlockInteractHandler {
             return; // 仅在服务器端处理
         }
 
-        // 检查右键是否针对方块
-        EntityPlayer player = event.getEntityPlayer();
-        if (player.getHeldItem(EnumHand.MAIN_HAND).isEmpty()) {
-            return; // 如果没有物品在手，不处理
+        if (event.getHand() != EnumHand.MAIN_HAND) {
+            return; // 仅处理主手的交互
         }
 
+        EntityPlayer player = event.getEntityPlayer();
         Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
         int meta = block.getMetaFromState(event.getWorld().getBlockState(event.getPos()));
         BlockKey key = new BlockKey(block.getRegistryName().toString(), meta);
+        BlockPos pos = event.getPos();
 
         if (blockInteractions.containsKey(key)) {
             int requiredExperienceLevels = blockInteractions.get(key);
             if (player.experienceLevel >= requiredExperienceLevels) {
                 player.addExperienceLevel(-requiredExperienceLevels);
                 player.sendMessage(new TextComponentString(I18n.format("message.block_interact_success", block.getRegistryName().toString(), requiredExperienceLevels)));
+                guiInteractionTracker.put(pos, requiredExperienceLevels);
             } else {
                 player.sendMessage(new TextComponentString(I18n.format("message.not_enough_experience", requiredExperienceLevels)));
                 event.setCanceled(true); // 取消交互，阻止GUI打开
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
+        EntityPlayer player = event.getEntityPlayer();
+        BlockPos pos = player.getPosition();
+
+        if (guiInteractionTracker.containsKey(pos)) {
+            int requiredExperienceLevels = guiInteractionTracker.get(pos);
+            if (player.experienceLevel < requiredExperienceLevels) {
+                player.sendMessage(new TextComponentString(I18n.format("message.not_enough_experience", requiredExperienceLevels)));
+                player.closeScreen(); // 强制关闭GUI
+            }
+            guiInteractionTracker.remove(pos); // 移除已处理的交互记录
         }
     }
 

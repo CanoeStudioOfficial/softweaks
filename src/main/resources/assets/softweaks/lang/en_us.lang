@@ -9,3 +9,5 @@ message.block_interact_success=You successfully interacted with the %s block usi
 message.not_enough_experience=Interaction failed, you do not have enough experience levels (%d required).
 message.unsupported_mod=You have been given Weakness because you have an unsupported mod installed.
 message.whitelist_initialized=Whitelist initialized with default commands.
+
+
